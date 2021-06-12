@@ -14,6 +14,12 @@ export class InputCast {
     })  
     
     context.addCustomMessageListener('urn:x-cast:com.inputcast.gamepad', ({ data }) => {
+      if (typeof data.connected === 'boolean') {
+        const type = data.connected ? Gam3pad.INPUT.CONNECTED : Gam3pad.INPUT.DISCONNECTED
+        this.#dispatchCallbacks(type, data, this.#gamepadCallbacks)
+        return
+      }
+
       data.buttons.forEach(({type, button}) => {
         this.#dispatchCallbacks(type, button, this.#gamepadCallbacks)
       })

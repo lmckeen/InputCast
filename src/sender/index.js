@@ -5,6 +5,7 @@ export class InputCast {
   #gamepadInterceptors = {}
   #keyboardInterceptors = {}
   #session
+  #gamepad
 
   constructor() {
     const player = new cast.framework.RemotePlayer()
@@ -12,6 +13,9 @@ export class InputCast {
     const context = cast.framework.CastContext.getInstance()
     const remotePlayerEventType = cast.framework.RemotePlayerEventType
 
+    this.#gamepad = new Gam3pad()
+    this.#setupConnectedEvents()
+    
     controller.addEventListener(remotePlayerEventType.IS_CONNECTED_CHANGED, event => {
       this.#isConnected = event.value
       if (!this.#isConnected) return 
@@ -47,18 +51,16 @@ export class InputCast {
         }
       }
 
-      keyboardEvent = this.#sendInterceptor(
+      keyboardEvent = await this.#sendInterceptor(
         code,
         keyboardEvent,
         this.#keyboardInterceptors
       )
       
-      this.#sendKeyboardInput(await keyboardEvent)
+      this.#sendKeyboardInput(keyboardEvent)
     })
 
-    const gamepad = new Gam3pad()
-
-    gamepad.on(Gam3pad.INPUT.ALL, async event => {
+    this.#gamepad.on(Gam3pad.INPUT.ALL, event => {
       if (!this.#isConnected) return 
  
       const buttons = event.buttons.map(data => {
@@ -77,7 +79,7 @@ export class InputCast {
         this.#gamepadInterceptors
       )
 
-      Promise.all([Promise.all(buttons), await joysticksEvent]).then(([buttons, joysticks]) => {
+      Promise.all([Promise.all(buttons), joysticksEvent]).then(([buttons, joysticks]) => {
         this.#sendGamepadInput({
           buttons,
           joysticks
@@ -116,5 +118,43 @@ export class InputCast {
   
   #sendKeyboardInput(event) {
     this.#session.sendMessage('urn:x-cast:com.inputcast.keyboard', event)
+  }
+
+  #generateGamepadToSend(gamepad) {
+    const {
+      id,
+      connected,
+      index,
+      mapping,
+      timestamp
+    } = gamepad
+
+    return {
+      id,
+      connected,
+      index,
+      mapping,
+      timestamp
+    }
+  }
+
+  #setupConnectedEvents() {
+    this.#gamepad.on(Gam3pad.INPUT.CONNECTED, async event => {
+      const connectedEvent = await this.#sendInterceptor(
+        Gam3pad.INPUT.CONNECTED,
+        this.#generateGamepadToSend(event.gamepad),
+        this.#gamepadInterceptors
+      )
+      this.#sendGamepadInput(connectedEvent)
+    })
+
+    this.#gamepad.on(Gam3pad.INPUT.DISCONNECTED, async event => {
+      const disconnectedEvent = await this.#sendInterceptor(
+        Gam3pad.INPUT.DISCONNECTED,
+        this.#generateGamepadToSend(event.gamepad),
+        this.#gamepadInterceptors
+      )
+      this.#sendGamepadInput(disconnectedEvent)
+    })
   }
 }
