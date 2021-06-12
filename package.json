@@ -1,0 +1,27 @@
+{
+  "name": "inputcast",
+  "version": "0.0.1",
+  "description": "Demo repo for InputCast",
+  "author": "Luke Mckeen",
+  "license": "MIT",
+  "exports": {
+    ".": "./dist/sender.js",
+    "./sender": "./dist/sender.js",
+    "./receiver": "./dist/receiver.js"
+  },
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmckeen/inputcast.git"
+  },
+  "dependencies": {
+    "gam3pad": "^0.0.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  }
+}
