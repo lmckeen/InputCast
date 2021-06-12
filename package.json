@@ -5,13 +5,9 @@
   "author": "Luke Mckeen",
   "license": "MIT",
   "exports": {
-    ".": "./dist/sender.js",
-    "./sender": "./dist/sender.js",
-    "./receiver": "./dist/receiver.js"
-  },
-  "scripts": {
-    "build": "webpack",
-    "build:watch": "webpack --watch"
+    ".": "./src/sender",
+    "./sender": "./src/sender",
+    "./receiver": "./src/receiver"
   },
   "repository": {
     "type": "git",

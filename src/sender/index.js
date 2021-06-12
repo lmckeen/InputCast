@@ -19,7 +19,7 @@ export class InputCast {
       this.#session = context.getCurrentSession()
     })
 
-    document.addEventListener('keydown', event => {
+    document.addEventListener('keydown', async event => {
       if (!this.#isConnected) return
 
       const {
@@ -53,7 +53,7 @@ export class InputCast {
         this.#keyboardInterceptors
       )
       
-      this.#sendKeyboardInput(keyboardEvent)
+      this.#sendKeyboardInput(await keyboardEvent)
     })
 
     const gamepad = new Gam3pad()
