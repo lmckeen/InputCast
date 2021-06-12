@@ -37,12 +37,10 @@ import { InputCast } from 'inputcast/receiver'
 const inputCast = new InputCast()
 
 inputCast.onGamepad(InputCast.INPUT.R2, event => {
-  //This event will contain the right trigger data when button pressed
   console.log(event) 
 })
 
 inputCast.onKeyboard(InputCast.INPUT.ALL, event => {
-  //This event will contain a KeyboardEvent data object with depricated properties removed
   console.log(event) 
 })
 ```
@@ -53,14 +51,18 @@ inputCast.onKeyboard(InputCast.INPUT.ALL, event => {
 ### Sender
 
 ```js
-//Gamepad interceptor that allows modifying or adding data before being sent to the receiver
+//Gamepad interceptor that allows modifying or 
+//adding data before being sent to the receiver
 onBeforeGamepad(
   type: string,
   cb: (event: GamepadEvent) => Promise<GamepadEvent> | GamepadEvent
 )
 
-//Keyboard interceptor that allows modifying or adding data before being sent to the receiver
-//This event data alow includes a `preventDefault` function that if called with stop it from also propagating to the sender
+//Keyboard interceptor that allows modifying or 
+//adding data before being sent to the receiver
+//This event data also includes a `preventDefault` 
+//function that if called will stop the event from 
+//propagating to the sender
 onBeforeGamepad(
   type: string, 
   cb: (event: KeyboardEvent) => Promise<KeyboardEvent> | KeyboardEvent
@@ -82,6 +84,21 @@ onGamepad(
   cb: (event: KeyboardEvent) => void
 )
 ```
+
+<br> 
+
+## Available types
+
+### Gamepad
+InputCast supports all of the available types in the below repo<br>
+https://github.com/lmckeen/Gam3pad#available-types
+
+### Keyboard
+```js
+InputCast.INPUT.ALL
+```
+InputCast also supports all KeyboardEvent types by their respective string based code value<br>
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/code/code_values
 
 <br>
 
